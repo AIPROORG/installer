@@ -1,0 +1,12 @@
+.google-login-button {
+  padding: 0 12px;
+  margin: 0 4px;
+  border-radius: 100%;
+  border-color: white;
+  border-width: 1px;
+  aspect-ratio: 1;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

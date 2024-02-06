@@ -1,0 +1,185 @@
+html {
+  font-size: 20px;
+}
+
+.App {
+  overflow: hidden;
+}
+
+body {
+  font-family: "Poppins";
+  color: white;
+  font-size: 1.2rem;
+  font-weight: semibold;
+  overflow: none !important;
+}
+
+.MainContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../assets/images/background.svg") no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+.step {
+  position: relative;
+  width: 50%;
+}
+
+.SecondContainer {
+  text-align: center;
+  margin-top: 20%;
+  position: relative;
+  top: 20%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 10em;
+}
+
+#button-company,
+#button-freelancer {
+  margin: 0 auto;
+  display: block;
+  background: rgba(34, 30, 198, 0.81);
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 8px;
+}
+
+#button-company {
+  margin-bottom: 1em;
+}
+
+.WizardHeading {
+  color: white;
+  font-size: 4rem;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #651eda;
+  text-shadow: 2px 2px #000000;
+}
+
+.btn-primary {
+  max-width: 150px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.ContainerInput {
+  background: url("../assets/images/background-input.png");
+  background-size: cover;
+  padding: 1em 4em;
+}
+
+.button-back {
+  align-self: start;
+  justify-self: end;
+  margin-top: 40vh;
+  margin-left: 2vw;
+}
+
+.step-p {
+  display: inline;
+  margin-right: 1em;
+}
+
+.input-wizard {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 0.5rem;
+  padding: 5px;
+  margin-right: 1em;
+}
+
+.input-next {
+  background: rgba(94, 86, 212, 0.8);
+  padding: 0.5em 1em;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.placeholder {
+  color: white;
+}
+
+.back-button {
+  position: fixed;
+  top: 90%;
+  right: 88%;
+  padding: 0.5em 1em;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.social-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 12px auto;
+}
+
+/* Media Queries */
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .step,
+  .SecondContainer {
+    width: 40%;
+    padding: 5em;
+  }
+
+  .WizardHeading {
+    font-size: 5rem;
+  }
+}
+
+/* Medium screens */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .step,
+  .SecondContainer {
+    width: 60%;
+    padding: 4em;
+  }
+
+  .WizardHeading {
+    font-size: 4.5rem;
+  }
+}
+
+/* Small screens */
+@media (max-width: 991px) {
+  .MainContainer,
+  .step,
+  .SecondContainer {
+    flex-direction: column;
+    width: 80%;
+    padding: 3em;
+  }
+
+  .WizardHeading {
+    font-size: 3.5rem;
+  }
+
+  .btn-primary,
+  .input-next,
+  .back-button {
+    max-width: 100px;
+    min-width: 100px;
+  }
+}
