@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import StepWizard from "react-step-wizard";
-import Step6 from "./components/oldComponents/Step6";
 
 import {
   ChooseClientTypeStep,
@@ -43,12 +42,12 @@ const IntroStepsPage = () => {
 
   return (
     <StepWizard initialStep={ChooseClientTypeStep}>
+      <CreateAccountStep />
       <ChooseClientTypeStep />
       <ValidateCUIStep />
       <EnterEmailStep />
       <SocialDetailsStep />
       <PhoneNumberStep />
-      <CreateAccountStep />
     </StepWizard>
   );
 };

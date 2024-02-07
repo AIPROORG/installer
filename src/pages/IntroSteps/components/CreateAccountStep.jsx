@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState, useContext } from "react";
+import AuthContext from "../../../services/AuthContext";
 import { StepInput, NextButton, BackButton } from "../../../components";
 
 const CreateAccountStep = ({ previousStep, nextStep }) => {
@@ -7,6 +7,7 @@ const CreateAccountStep = ({ previousStep, nextStep }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const { registerUser } = useContext(AuthContext); // Folosim funcția registerUser din AuthContext
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -19,15 +20,22 @@ const CreateAccountStep = ({ previousStep, nextStep }) => {
   const handleConfirmPasswordChange = (e) => {
     const confirmPasswordValue = e.target.value;
     setConfirmPassword(confirmPasswordValue);
-
     setPasswordMatch(confirmPasswordValue === password);
   };
 
-  const handleNextStep = () => {
-    if (password === confirmPassword) {
-      nextStep?.();
-    } else {
+  const handleNextStep = async () => {
+    if (password !== confirmPassword) {
+      setPasswordMatch(false);
       console.log("Parolele nu se potrivesc");
+      return; // Iesim din funcție dacă parolele nu se potrivesc
+    }
+    try {
+      // Apelăm funcția de înregistrare și așteptăm rezultatul
+      await registerUser(username, password);
+      nextStep(); // Dacă înregistrarea este reușită, trecem la următorul pas
+    } catch (error) {
+      // Dacă înregistrarea eșuează, afișăm o eroare
+      console.error(error);
     }
   };
 
