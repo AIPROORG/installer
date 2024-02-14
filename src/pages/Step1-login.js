@@ -1,13 +1,11 @@
 import React, {useContext} from 'react'
 import AuthContext from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
 
 const Step1Login = () => {
 
     let {loginUser} = useContext(AuthContext)
     const [incorrectPassword, setIncorrectPassword] = React.useState(false)
     const [incorrectUsername, setIncorrectUsername] = React.useState(false)
-    const navigate = useNavigate()
     
     function LogUserIn(event) {
         event.preventDefault()
@@ -21,7 +19,6 @@ const Step1Login = () => {
         }else setIncorrectPassword(false)
 
         loginUser(event)
-        navigate('/step2')
     }
 
     return (
