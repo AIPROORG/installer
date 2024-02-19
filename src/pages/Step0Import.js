@@ -1,15 +1,15 @@
 /* global chrome */
 import React, {useEffect, useState} from 'react'
 
-const Step0Import = () => {
+const Step5Organigram = () => {
 
     const [browserList, setBrowserList] = useState([]);
 
-    useEffect(() => {
-        chrome.aipro.getBrowserList(function(browser_list) {
-            setBrowserList(browser_list);
-        });
-    }, []);
+    // useEffect(() => {
+    //     chrome.aipro.getBrowserList(function(browser_list) {
+    //         setBrowserList(browser_list);
+    //     });
+    // }, []);
 
 
     function importFromBrowser(button, browserIndex){
@@ -48,4 +48,4 @@ const Step0Import = () => {
     )
 }
 
-export default Step0Import
+export default Step5Organigram

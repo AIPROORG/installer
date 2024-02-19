@@ -8,7 +8,7 @@ import Step1Login from './pages/Step1-login'
 import Step2Role from './pages/Step2-role'
 import Step3Cui from './pages/Step3-cui'
 import Step4Applications from './pages/Step4-applications'
-
+import Step5Organigram from './pages/Step5-organigram'
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
                     <Route path="/step2" element={<Step2Role/>}/>
                     <Route path="/step3" element={<Step3Cui/>}/>
                     <Route path="/step4" element={<Step4Applications/>}/>
+                    <Route path="/step5" element={<Step5Organigram/>}/>
                 </Routes>
             </AuthProvider>
         </Router>
