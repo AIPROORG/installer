@@ -70,3 +70,5 @@
  *
  * @license MIT
  */
+
+//! if node id is not a number, it is a group
