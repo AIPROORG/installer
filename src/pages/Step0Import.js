@@ -6,9 +6,9 @@ const Step5Organigram = () => {
     const [browserList, setBrowserList] = useState([]);
 
     useEffect(() => {
-        chrome.aipro.getBrowserList(function(browser_list) {
-            setBrowserList(browser_list);
-        });
+        // chrome.aipro.getBrowserList(function(browser_list) {
+            // setBrowserList(browser_list);
+        // });
     }, []);
 
 

@@ -37,3 +37,14 @@ code {
 .boc-ligh {
   background: transparent !important;
 }
+
+#tree {
+  background-color: transparent;
+}
+#tree:fullscreen {
+  background: url("../public/images/background-installer.png") no-repeat center center;
+  background-size: cover;
+}
+.button-close {
+  margin-left: 13em;
+}
