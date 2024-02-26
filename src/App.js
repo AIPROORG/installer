@@ -7,8 +7,9 @@ import Step0Import from './pages/Step0Import'
 import Step1Login from './pages/Step1-login'
 import Step2Role from './pages/Step2-role'
 import Step3Cui from './pages/Step3-cui'
-import Step4Applications from './pages/Step4-applications'
 import Step5Organigram from './pages/Step5-organigram'
+import Home from './pages/home'
+import SocialAuth from './pages/SocialAuth'
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
                     <Route path="/step1" element={<Step1Login/>}/>
                     <Route path="/step2" element={<Step2Role/>}/>
                     <Route path="/step3" element={<Step3Cui/>}/>
-                    <Route path="/step4" element={<Step4Applications/>}/>
-                    <Route path="/step5" element={<Step5Organigram/>}/>
+                    <Route path="/step4" element={<Step5Organigram/>}/>
+                    <Route path="/step5" element={<Home/>}/>
+                    <Route path="/google" element={<SocialAuth/>}/>
                 </Routes>
             </AuthProvider>
         </Router>

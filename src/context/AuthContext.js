@@ -22,11 +22,11 @@ export const AuthProvider = ({children}) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({username: e.target.username.value, password: e.target.password.value })
+            body: JSON.stringify({email: e.target.email.value, password: e.target.password.value })
         });
 
         let data = await response.json();
-        
+        console.log(data)
         if(data && response.status === 200){
             localStorage.setItem('authTokens', JSON.stringify(data));
             setAuthTokens(data)
@@ -58,6 +58,9 @@ export const AuthProvider = ({children}) => {
         if (response.status === 200) {
             setAuthTokens(data)
             setUser(jwtDecode(data.access))
+            let authData = [
+                
+            ]
             localStorage.setItem('authTokens',JSON.stringify(data))
         } else {
             logoutUser()

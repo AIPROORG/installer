@@ -9,8 +9,7 @@ const Header = () => {
             <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step1" >Login</Link>
             <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step2">Company/Freelance</Link>
             <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step3">Company CUI</Link>
-            <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step4">Applications</Link>
-            <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step5">Organigram</Link>
+            <Link className="p-1 m-1 border rounded-xl bg-neutral-100 hover:bg-neutral-300" to="/step4">Organigram</Link>
         </div>
     )
 }

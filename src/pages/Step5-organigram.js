@@ -10,9 +10,13 @@ const Chart = () =>
     const [rightSidebar, setRightSidebar] = useState(false);
     const [leftSidebar, setLeftSidebar] = useState(false);
     const [selectedNode, setNodeInfo] = useState(null);
-    const [inputValues, setInputValues] = useState({});
+    const [inputValues, setInputValues] = useState({
+        inputEmails: ''
+    });
     const initializeChart = () =>
     {
+        let users = localStorage.getItem("listUsers");
+        
         chart = new OrgChart(divRef.current, {
             nodes: jsonData,
             enableSearch: false,
@@ -121,6 +125,45 @@ const Chart = () =>
                 },
             },
         });
+        try{
+            let aux = users.split(',');
+            console.log(aux);
+        let count = 0;
+
+        for(const email of aux)
+        {
+            count += 1;
+            console.log(email);
+            if(email !== "")
+            {
+                setTimeout(() =>
+                {
+                    let id = getLastId();
+                    console.log(id);
+                    console.log(isIdinChart(id));
+                    if(!isIdinChart(id))
+                    {
+                        let data = {
+                            "id": id,
+                            "name": "",
+                            "stpid": "unasigned",
+                            "title": email,
+                            "img": "",
+                            "email": email,
+                            "tags": ["unasigned-node-card-style"],
+                            "button": " "
+                        }
+                        console.log(data);
+
+                        chart.addNode(data);
+                    }
+                }, 200 * count);
+            }
+        }
+    }
+    catch(e){
+        console.log(e);
+    }
     }
     const handleChange = (e) =>
     {
@@ -141,10 +184,15 @@ const Chart = () =>
     const getLastId = () =>
     {
         let rez = -1;
-        if(chart.nodes)
+        if(chart.nodes === null)
+        {
+            return 0;
+        }
+        else if(chart.nodes)
         {
             for(let x in chart.nodes)
             {
+                // console.log(x);
                 if(!isNaN(x))
                 {
                     if(parseInt(x) > rez)
@@ -156,34 +204,88 @@ const Chart = () =>
         }
         return rez + 1
     }
+    const isIdinChart = (id) =>
+    {
+        for(const x in chart.nodes)
+        {
+            if(x.id === id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     const addNewNodeForm = (e) =>
     {
         e.preventDefault();
-        let name = inputValues.inputName;
-        let pos = inputValues.inputPos;
-        let email = inputValues.inputEmail;
-        let img = inputValues.inputImage;
-        // if(name === '' || pos === '' || email === '') return false;
-        console.log(name, pos, email, img);
-        let id = getLastId();
-        let data = {
-            "id": id,
-            "name": name,
-            "stpid": "unasigned",
-            "title": pos,
-            "img": img,
-            "email": email,
-            "tags": ["unasigned-node-card-style"],
-            "button": " "
+        let emails = document.getElementById("txtArea");
+        let delimiters = /,|\n|\t|\s|;/;
+        let email_list = emails.value.split(delimiters);
+        let count = 0;
+
+        for(const email of email_list)
+        {
+            count += 1;
+            if(email !== "")
+            {
+                setTimeout(() =>
+                {
+                    let id = getLastId();
+                    console.log(isIdinChart(id));
+                    if(!isIdinChart(id))
+                    {
+                        let data = {
+                            "id": id,
+                            "name": "",
+                            "stpid": "unasigned",
+                            "title": email,
+                            "img": "",
+                            "email": email,
+                            "tags": ["unasigned-node-card-style"],
+                            "button": " "
+                        }
+                        console.log(data);
+
+                        // chart.addNode(data);
+
+                        chart.addNode(data);
+                    }
+                }, 200 * count);
+            }
         }
-        // console.log(getLastId());
-        chart.addNode(data);
-        setInputValues({
-            inputName: '',
-            inputPos: '',
-            inputEmail: '',
-            inputImage: ''
-        });
+        emails.value = '';
+        // let name = inputValues.inputName;
+        // let pos = inputValues.inputPos;
+        // let emails = inputValues.inputEmails;
+        // console.log(e);
+        // let img = inputValues.inputImage;
+        // if(name === '' || pos === '' || email === '') return false;
+        // console.log(name, pos, email, img);
+
+        console.log(email_list);
+        // setLeftSidebar(!leftSidebar);
+
+        // let id = getLastId();
+        // let data = {
+        //     "id": id,
+        //     "name": name,
+        //     "stpid": "unasigned",
+        //     "title": pos,
+        //     "img": img,
+        //     "email": email,
+        //     "tags": ["unasigned-node-card-style"],
+        //     "button": " "
+        // }
+        // // console.log(getLastId());
+        // chart.addNode(data);
+        // setInputValues({
+        //     inputEmails: ''
+        // });
+        //     inputName: '',
+        //     inputPos: '',
+        //     inputEmail: '',
+        //     inputImage: ''
+        // });
         // console.log(chart);
     }
     const closeForm = () =>
@@ -424,14 +526,15 @@ const Chart = () =>
             <div className={` ${leftSidebar ? 'block' : 'hidden'} p-2 w-[300px] h-full bg-neutral-200`} id="sidebarLeft">
                 <form className="grid" onSubmit={addNewNodeForm} >
                     <button className="button-close text-left bg-transparent text-black text-right w-5 font-bold py-2 px-4 rounded-full text-center mt-2" onClick={closeForm} value='Send' id='inputSend'>X</button>
-                    <label className="mb-2" htmlFor="inputName">Name:</label>
-                    <input className="rounded-2xl p-1" type='text' placeholder='Nume' required id='inputName' value={inputValues.inputName} onChange={handleChange} />
-                    <label className="mb-2" htmlFor="inputPos">Position:</label>
+                    <label className="mb-2" htmlFor="inputName">Emails:</label>
+                    <textarea required id="txtArea" />
+                    {/* <input className="rounded-2xl p-1" type='text' placeholder='Emails' required id='inputEmails' value={inputValues.inputEmails} onChange={handleChange} /> */}
+                    {/* <label className="mb-2" htmlFor="inputPos">Position:</label>
                     <input className="rounded-2xl p-1" type='text' placeholder='Position' required id='inputPos' value={inputValues.inputPos} onChange={handleChange} />
                     <label className="mb-2" htmlFor="inputEmail">Email:</label>
                     <input className="rounded-2xl p-1" type='email' placeholder='Email' required id='inputEmail' value={inputValues.inputEmail} onChange={handleChange} />
                     <label className="mb-2" htmlFor="inputName">Image:</label>
-                    <input className="rounded-2xl p-1" type='text' placeholder='Image' id='inputImage' value={inputValues.inputImage} onChange={handleChange} />
+                    <input className="rounded-2xl p-1" type='text' placeholder='Image' id='inputImage' value={inputValues.inputImage} onChange={handleChange} /> */}
                     <button className="text-left bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-center mt-2" type='submit' value='Send' id='inputSend'>Add user</button>
                 </form>
             </div>

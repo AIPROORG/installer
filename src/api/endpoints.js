@@ -1,36 +1,31 @@
+// const LOCALE_BACKEND_URL = "http://127.0.0.1:8000/";
 // const endpoints = {
 //   company: {
-//     setCompany: `http://127.0.0.1:8000/api/organization/set_organization/`, // POST
-//     getDepartments: `http://127.0.0.1:8000/api/organization/generate_departments/`, // GET
+//     setCompany: `${LOCALE_BACKEND_URL}api/organization/set_organization/`, // POST
+//     getDepartments: `${LOCALE_BACKEND_URL}api/organization/generate_departments/`, // GET
 //   },
 //   login: {
 //     basic: {
-//       login: "http://127.0.0.1:8000/api/token/", 
-//       updateToken: "http://127.0.0.1:8000/api/token/refresh/", 
-//       setGoogleUserData: "http:///127.0.0.1:8000/api/auth/google/",
+//       login: `${LOCALE_BACKEND_URL}api/auth/regular-login/`, 
+//       updateToken: `${LOCALE_BACKEND_URL}api/auth/token/refresh/`, 
 //     },
-//     google: {
-//       getUserInfo: (accessToken) =>
-//         `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
-//     },
+//     google: `${LOCALE_BACKEND_URL}api/auth/google/`,
 //   },
 // };
 
 
+const PRODUCTION_BACKEND_URL = "https://backend-for-browser-production.up.railway.app/";
 const endpoints = {
-    company: {
-        setCompany: `https://django-rest-starter-production-e568.up.railway.app/api/organization/set_organization/`, // POST
-        getDepartments: "https://django-rest-starter-production-e568.up.railway.app/api/organization/generate_departments/",
+  company: {
+    setCompany: `${PRODUCTION_BACKEND_URL}api/organization/set_organization/`, // POST
+    getDepartments: `${PRODUCTION_BACKEND_URL}api/organization/generate_departments/`, // GET
   },
   login: {
     basic: {
-      login: "https://django-rest-starter-production-e568.up.railway.app/api/token/",
-      updateToken: "https://django-rest-starter-production-e568.up.railway.app/api/token/refresh/",
+      login: `${PRODUCTION_BACKEND_URL}api/auth/regular-login/`, 
+      updateToken: `${PRODUCTION_BACKEND_URL}api/auth/token/refresh/`, 
     },
-    google: {
-      getUserInfo: (accessToken) =>
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
-    },
+  google: `${PRODUCTION_BACKEND_URL}api/auth/google/`,
   },
 };
 
