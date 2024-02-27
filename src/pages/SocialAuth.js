@@ -3,9 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import axios from "axios";
 import "./index.css";
-import { endpoints } from "../api/endpoints";
-
-// const  BACKEND_API_URL = "https://backend-for-browser-production.up.railway.app"
+import { endpoints } from "../utils/endpoints";
+import storageComunicator from '../utils/storageComunication'
 
 const SocialAuth = () => {
   let location = useLocation();
@@ -21,16 +20,12 @@ const SocialAuth = () => {
   }, []);
 
   const googleLoginHandler = (code) => {
-    // console.log(code);
     let url = `${endpoints.login.google}${code}`;
-    // console.log(url);
     return axios.get(url).then((res) => {
-        console.log("res from backend", res.data);
-        // localStorage.setItem("goggleFirstName", res.data.user.first_name);
-        // localStorage.setItem("authTokens", res.data.access);
-        // console.log("data", res)
-        localStorage.setItem("authTokens", JSON.stringify(res.data));
-        navigate("/step4");
+        // console.log("res from backend", res.data);
+        storageComunicator.authToken.set(res.data);
+        // localStorage.setItem("authTokens", JSON.stringify(res.data));
+        navigate("/step3");
         return res.data;
       })
       .catch((err) => {
@@ -41,9 +36,11 @@ const SocialAuth = () => {
 
   const onGogglelogin = async () => {
     googleLoginHandler(location.search);
+    
   };
 
   return (
+    // <AuthContext.Provider value={contextData}>
     <div className="loading-icon-container">
       <div className="loading-icon">
         <div className="loading-icon__circle loading-icon__circle--first"></div>
@@ -53,6 +50,7 @@ const SocialAuth = () => {
       </div>
       <small className=" text-center mr-2">Just a moment</small>
     </div>
+// </AuthContext.Provider>);
   );
 };
 

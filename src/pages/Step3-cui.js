@@ -1,11 +1,12 @@
 import React, {useContext, useState} from 'react'
-import { endpoints } from '../api/endpoints';
-import AuthContext from '../context/AuthContext';
+import { endpoints } from '../utils/endpoints';
+// import AuthContext from '../context/AuthContext';
 import {Link} from 'react-router-dom';
+import storageComunicator from '../utils/storageComunication';
 
 const Step3Cui = () => {
 
-    const { authTokens } = useContext(AuthContext);
+    // const { authTokens } = useContext(AuthContext);
     const [ inputCui, setInputCui ] = useState(null);
     const [denumire, setDenumire] = useState(null);
     const [cui, setCui] = useState(null);
@@ -54,7 +55,7 @@ const Step3Cui = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    'Authorization':'Bearer ' + String(authTokens.access),
+                    'Authorization':'Bearer ' + String(storageComunicator.authToken.get().access),
                 },
                 body: JSON.stringify({ cui: e.target.cui.value }),
 
@@ -66,7 +67,6 @@ const Step3Cui = () => {
         })
         .then(data => setCompanyDetails(data))
         .catch(error => alert(error))
-
     }
 
 

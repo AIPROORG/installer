@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
 
-import { AuthProvider } from './context/AuthContext'
+// import { AuthProvider } from './context/AuthContext'
 import Header from './components/Header'
 
 import Step0Import from './pages/Step0Import'
@@ -10,13 +11,49 @@ import Step3Cui from './pages/Step3-cui'
 import Step5Organigram from './pages/Step5-organigram'
 import Home from './pages/home'
 import SocialAuth from './pages/SocialAuth'
+import storageComunicator from './utils/storageComunication'
+import { endpoints } from './utils/endpoints'
 
 function App() {
+  
+  useEffect(()=>{
+    let authTokens = storageComunicator.authToken.get()
+    
+    const REFRESH_INTERVAL = 1000 * 60 * 4 // 4 minutes
+    let interval = setInterval(()=>{
+      console.log("interval for refresh token")
+        if(authTokens){
+            updateToken()
+        }
+    }, REFRESH_INTERVAL)
+    return () => clearInterval(interval)
+
+  },[])
+
+  const updateToken = async () => {
+    const authTokens = storageComunicator.authToken.get()
+    if(!authTokens?.refresh) return
+    const response = await fetch(endpoints.login.basic.updateToken, {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({refresh:authTokens?.refresh})
+    })
+  
+    const data = await response.json()
+    if (response.status === 200) {
+        storageComunicator.authToken.set(data)
+    } else {
+          localStorage.removeItem('authTokens')
+    }
+  }
+  
   return (
     <div className="App">
         <Router>
           <Header/>
-            <AuthProvider>
+            {/* <AuthProvider> */}
                 <Routes>
                     <Route path="/" element={<Step0Import/>}/>
                     {/* <Route path="/step0" element={<div>a;jdfhlkajsdfhalkjshdgfkjashgd</div>}/> */}
@@ -27,7 +64,7 @@ function App() {
                     <Route path="/step5" element={<Home/>}/>
                     <Route path="/google" element={<SocialAuth/>}/>
                 </Routes>
-            </AuthProvider>
+            {/* </AuthProvider> */}
         </Router>
     </div>
   );
