@@ -29,4 +29,4 @@ const endpoints = {
   },
 };
 
-export { endpoints };
+export { endpoints, PRODUCTION_BACKEND_URL };

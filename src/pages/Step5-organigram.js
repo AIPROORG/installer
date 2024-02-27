@@ -1,22 +1,28 @@
 import React, { useRef, useEffect, useState } from 'react';
 import OrgChart from "@balkangraph/orgchart.js";
 import jsonData from './nodesData.json';
+import { PRODUCTION_BACKEND_URL } from '../utils/endpoints';
+import axios from "axios";
+import storageComunicator from '../utils/storageComunication';
 // import '../index.css';
 
 const Chart = () =>
 {
     const divRef = useRef(null);
+    let userList;
     let chart;
     const [rightSidebar, setRightSidebar] = useState(false);
     const [leftSidebar, setLeftSidebar] = useState(false);
+
+    const [isMounted, setIsMounted] = useState(false);
     const [selectedNode, setNodeInfo] = useState(null);
     const [inputValues, setInputValues] = useState({
         inputEmails: ''
     });
     const initializeChart = () =>
     {
-        let users = localStorage.getItem("listUsers");
-        
+        // let users = localStorage.getItem("listUsers");
+
         chart = new OrgChart(divRef.current, {
             nodes: jsonData,
             enableSearch: false,
@@ -75,9 +81,9 @@ const Chart = () =>
                 "unasigned": {
                     template: "customGroupUnasigned",
                     subTreeConfig: {
-                        siblingSeparation: 2,
+                        siblingSeparation: 15,
                         template: 'ana',
-                        columns: 1,
+                        columns: 3,
                     }
                 },
                 "organigram": {
@@ -90,6 +96,9 @@ const Chart = () =>
                 },
                 "department": {
                     template: "group"
+                },
+                "unasigned-google-node-card-style": {
+                    template: "oliviaCustom2",
                 },
                 "unasigned-node-card-style": {
                     template: "oliviaCustom",
@@ -125,24 +134,42 @@ const Chart = () =>
                 },
             },
         });
-        try{
+
+    }
+
+    const addGoogleEmails = async () =>
+    {
+        userList = "";
+        try
+        {
+            console.log(userList);
+            const res = await axios.get(`${PRODUCTION_BACKEND_URL}api/googleUserList/`, {
+                headers: {
+                    Authorization: `Bearer ${storageComunicator.authToken.get().access}`
+                }
+            });
+            let users = "";
+            console.log(res.data);
+            for(let x of res.data)
+            {
+                users += x + ",";
+            }
+            // localStorage.setItem("listUsers", users);
+            console.log("response from new endpoint", res);
             let aux = users.split(',');
             console.log(aux);
-        let count = 0;
-
-        for(const email of aux)
-        {
-            count += 1;
-            console.log(email);
-            if(email !== "")
+            let count = 0;
+            for(const email of aux)
             {
-                setTimeout(() =>
+                count += 1;
+                console.log(email);
+                if(email !== "")
                 {
-                    let id = getLastId();
-                    console.log(id);
-                    console.log(isIdinChart(id));
-                    if(!isIdinChart(id))
+                    setTimeout(() =>
                     {
+                        let id = getLastId();
+                        console.log(id);
+                        console.log(isIdinChart(id));
                         let data = {
                             "id": id,
                             "name": "",
@@ -150,21 +177,35 @@ const Chart = () =>
                             "title": email,
                             "img": "",
                             "email": email,
-                            "tags": ["unasigned-node-card-style"],
+                            "tags": ["unasigned-google-node-card-style"],
                             "button": " "
-                        }
+                        };
                         console.log(data);
-
-                        chart.addNode(data);
-                    }
-                }, 200 * count);
+                        if(!getEmailsFromGoogleAccount(email))
+                            chart.addNode(data);
+                    }, 200 * count);
+                }
+            }
+        } catch(err)
+        {
+            console.log("error from new endpoint", err);
+        }
+    };
+    const getEmailsFromGoogleAccount = (data) =>
+    {
+        console.log(chart);
+        for(const x in chart.nodes)
+        {
+            console.log(chart.get(x));
+            if(chart.get(x).title === data)
+            {
+                return true;
             }
         }
+        return false;
     }
-    catch(e){
-        console.log(e);
-    }
-    }
+
+
     const handleChange = (e) =>
     {
         const { id, value } = e.target;
@@ -294,12 +335,23 @@ const Chart = () =>
     }
     useEffect(() =>
     {
+        initializeChart();
+        // if(!isMounted){
+        //     setIsMounted(true);
+        addGoogleEmails();
+        // }
+
         OrgChart.templates.customGroupUnasigned = Object.assign({}, OrgChart.templates.ana);
         OrgChart.templates.oliviaCustom = Object.assign({}, OrgChart.templates.olivia);
         OrgChart.templates.oliviaCustom.node =
             '<rect fill="#039BE5" x="0" y="0" height="{h}" width="{w}" stroke-width="1" stroke="#aeaeae" rx="7" ry="7"></rect>';
+        OrgChart.templates.oliviaCustom2 = Object.assign({}, OrgChart.templates.olivia);
+        OrgChart.templates.oliviaCustom2.node =
+            '<rect fill="#039BE5" x="0" y="0" height="{h}" width="{w}" stroke-width="1" stroke="#aeaeae" rx="7" ry="7"></rect>';
         OrgChart.templates.oliviaCustom.field_0 = '<text data-width="230" style="font-size: 18px;" fill="#ffffff" x="170" y="40" text-anchor="middle">{val}</text>';
+        OrgChart.templates.oliviaCustom2.field_0 = '<text data-width="230" style="font-size: 18px;" fill="#ffffff" x="170" y="40" text-anchor="middle">{val}</text>';
         OrgChart.templates.oliviaCustom.field_1 = '<text data-width="230" style="font-size: 18px;" fill="#ffffff" x="170" y="65" text-anchor="middle">{val}</text>';
+        OrgChart.templates.oliviaCustom2.field_1 = '<text data-width="230" style="font-size: 18px;" fill="#ffffff" x="170" y="65" text-anchor="middle">{val}</text>';
         OrgChart.templates.oliviaCustom.field_3 = '<circle cx="250" cy="60" r="25" fill="#ffffff" stroke="#aeaeae" stroke-width="2"></circle><line x1="235" y1="60" x2="265" y2="60" stroke-width="2" stroke="#aeaeae"></line>';
         OrgChart.templates.customGroupUnasigned.size = [250, 120];
         OrgChart.templates.customGroupUnasigned.node =
@@ -339,7 +391,7 @@ const Chart = () =>
             '<clipPath id="{randId}"><circle cx="60" cy="60" r="40"></circle></clipPath> <image preserveAspectRatio="xMidYMid slice" clip-path="url(#{randId})" xlink:href="{val}" x="20" y="20" width="80" height="80"></image>';
         OrgChart.templates.base.img_1 =
             '<clipPath id="{randId}"><circle cx="600" cy="600" r="400"></circle></clipPath> <image preserveAspectRatio="xMidYMid slice" clip-path="url(#{randId})" xlink:href="{val}" x="500" y="500" width="80" height="80"></image>';
-        initializeChart();
+
         const breakHiererchy = (sender, nodeId) =>
         {
             let node = sender.get(nodeId);
