@@ -12,6 +12,7 @@ const Step3Cui = () => {
     const [cui, setCui] = useState(null);
     const [cod_CAEN, setCod_CAEN] = useState(null);
     const [adresa, setAdresa] = useState(null);
+    const [nr_employees, setNr_employees] = useState(null);
     const [codPostal, setCodPostal] = useState(null);
     const [data_inregistrare, setData_inregistrare] = useState(null);
     const [nrRegCom, setNrRegCom] = useState(null);
@@ -31,6 +32,7 @@ const Step3Cui = () => {
         setCui(data.cui)
         setCod_CAEN(data.cod_CAEN)
         setAdresa(data.adresa)
+        setNr_employees(data.nr_employees)
         setCodPostal(data.codPostal)
         setData_inregistrare(data.data_inregistrare)
         setNrRegCom(data.nrRegCom)
@@ -63,9 +65,12 @@ const Step3Cui = () => {
         )
         .then(response => {
             if (response.ok) return response.json()
-            else throw new Error('CUI-ul introdus nu exista in baza de date. Va rugam sa incercati din nou.')
+            else throw new Error("some error occured, my guess is that you are not authentificated or the server is down")
         })
-        .then(data => setCompanyDetails(data))
+        .then(data => {
+            storageComunicator.company.set_info(data)
+            setCompanyDetails(data)
+        })
         .catch(error => alert(error))
     }
 
@@ -92,6 +97,7 @@ const Step3Cui = () => {
                         <div><h3 className="text-md font-medium text-wrap">Cod CAEN:</h3><p>{cod_CAEN}</p></div>
                         <div><h3 className="text-md font-medium text-wrap">Adresa:</h3><p>{adresa}</p></div>
                         <div><h3 className="text-md font-medium text-wrap">Cod Postal:</h3><p>{codPostal}</p></div>
+                        <div><h3 className="text-md font-medium text-wrap">Numar Angajati:</h3><p>{nr_employees}</p></div>
                         <div><h3 className="text-md font-medium text-wrap">Data Inregistrare:</h3><p>{data_inregistrare}</p></div>
                         <div><h3 className="text-md font-medium text-wrap">Numar Registrul Comertului:</h3><p>{nrRegCom}</p></div>
                         <div><h3 className="text-md font-medium text-wrap">Stare Inregistrare:</h3><p>{stare_inregistrare}</p></div>

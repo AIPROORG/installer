@@ -9,7 +9,7 @@
   "action": {
     "default_title": "Click to open extension (hover message)"
   },
-  "permissions": ["sidePanel", "aipro"],
+  "permissions": ["sidePanel", "aipro", "settingsPrivate"],
   "side_panel": {
     "default_path": "index.html"
   },

@@ -1,10 +1,7 @@
 [
     { "id": "unasigned","tags": [ "unasigned" ], "name": "Unasigned","button":" "}, 
     { "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}, 
-    { "id": "management", "pid": 1, "tags": ["department", "management" ], "name": "Management","button":" "},
-    { "id": "security", "pid": 1, "tags": [ "department","security" ], "name": "Security","button":" "},
-    { "id": "it", "pid": 1, "tags": [ "department","it" ], "name": "IT","button":" "},
-    { "id": "sales", "pid": 1, "tags": [ "department","sales" ], "name": "Sales","button":" "},
+
     
     { "id": 1, "name": "CEO","stpid": "organigram",  "title": "CEO","email":"asd@gmail.com", "img": "https://cdn.balkan.app/shared/2.jpg", "tags": ["asigned-node-card-style", "big-boss"] ,"button":" "}
 ]

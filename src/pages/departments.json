@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Gestionarea Resurselor Minerale",
+        "description": "departament responsabil pentru monitorizarea \u0219i gestionarea resurselor minerale utilizate \u00een activit\u0103\u021bile de extrac\u021bie."
+    },
+    {
+        "name": "Inginerie Geologic\u0103",
+        "description": "departament specializat \u00een evaluarea geologic\u0103 a z\u0103c\u0103mintelor pentru optimizarea proceselor de extrac\u021bie."
+    },
+    {
+        "name": "S\u0103n\u0103tate \u0219i Siguran\u021b\u0103 Ocupa\u021bional\u0103",
+        "description": "departament dedicat asigur\u0103rii condi\u021biilor de munc\u0103 sigure \u0219i s\u0103n\u0103toase pentru angaja\u021bi \u00een timpul opera\u021biunilor miniere."
+    },
+    {
+        "name": "\u00centre\u021binere Utilaje \u0219i Echipamente",
+        "description": "departament responsabil de mentenan\u021ba \u0219i repararea utilajelor \u0219i echipamentelor utilizate \u00een procesul de extrac\u021bie."
+    },
+    {
+        "name": "Comunicare Intern\u0103 \u0219i Extern\u0103",
+        "description": "departament implicat \u00een gestionarea comunic\u0103rii \u00eentre echipele interne din cadrul afacerii \u0219i partenerii externi."
+    },
+    {
+        "name": "Monitorizare Mediu \u0219i Ecologie",
+        "description": "departament responsabil de supravegherea impactului activit\u0103\u021bilor miniere asupra mediului \u00eenconjur\u0103tor."
+    },
+    {
+        "name": "Supraveghere Produc\u021bie \u0219i Eficien\u021b\u0103",
+        "description": "departament dedicat monitoriz\u0103rii productivit\u0103\u021bii \u0219i eficien\u021bei opera\u021bionale \u00een cadrul afacerii."
+    },
+    {
+        "name": "Listare Produse \u0219i Servicii",
+        "description": "departament responsabil de prezentarea, promovarea \u0219i v\u00e2nzarea produselor \u0219i serviciilor oferite de afacere."
+    },
+    {
+        "name": "Departament Financiar \u0219i Contabilitate",
+        "description": "departament responsabil de gestionarea aspectelor financiare, contabile \u0219i de raportare ale afacerii."
+    },
+    {
+        "name": "Resurse Umane \u0219i Managementul Resurselor",
+        "description": "departament responsabil de recrutarea, dezvoltarea \u0219i gestionarea resurselor umane din cadrul afacerii."
+    }
+]

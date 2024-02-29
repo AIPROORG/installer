@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import OrgChart from "@balkangraph/orgchart.js";
 import jsonData from './nodesData.json';
-import { PRODUCTION_BACKEND_URL } from '../utils/endpoints';
+import { BACKEND_URL } from '../utils/endpoints';
 import axios from "axios";
 import storageComunicator from '../utils/storageComunication';
 // import '../index.css';
@@ -19,6 +19,9 @@ const Chart = () =>
     const [inputValues, setInputValues] = useState({
         inputEmails: ''
     });
+    const deps = storageComunicator.company.get_departments();
+    
+   
     const initializeChart = () =>
     {
         // let users = localStorage.getItem("listUsers");
@@ -134,7 +137,21 @@ const Chart = () =>
                 },
             },
         });
-
+        for(const x of deps)
+        {
+            let data_dep = {
+                "id": x.name,
+                "name":  x.name,
+                "pid":1,
+                "title": x.name,
+                "img": "",
+                "email": x.name,
+                "tags": ["department","security"],
+                "button": " "
+            };
+            console.log(data_dep);
+            chart.addNode(data_dep);
+        }
     }
 
     const addGoogleEmails = async () =>
@@ -142,50 +159,50 @@ const Chart = () =>
         userList = "";
         try
         {
-            console.log(userList);
-            const res = await axios.get(`${PRODUCTION_BACKEND_URL}api/googleUserList/`, {
+            // console.log(userList);
+            const res = await axios.get(`${BACKEND_URL}api/googleUserList/`, {
                 headers: {
                     Authorization: `Bearer ${storageComunicator.authToken.get().access}`
                 }
             });
             let users = "";
-            console.log(res.data);
+            // console.log(res.data);
             for(let x of res.data)
             {
                 users += x + ",";
             }
             // localStorage.setItem("listUsers", users);
-            console.log("response from new endpoint", res);
+            // console.log("response from new endpoint", res);
             let aux = users.split(',');
-            console.log(aux);
+            // console.log(aux);
             let count = 0;
-            for(const email of aux)
-            {
-                count += 1;
-                console.log(email);
-                if(email !== "")
-                {
-                    setTimeout(() =>
-                    {
-                        let id = getLastId();
-                        console.log(id);
-                        console.log(isIdinChart(id));
-                        let data = {
-                            "id": id,
-                            "name": "",
-                            "stpid": "unasigned",
-                            "title": email,
-                            "img": "",
-                            "email": email,
-                            "tags": ["unasigned-google-node-card-style"],
-                            "button": " "
-                        };
-                        console.log(data);
-                        if(!getEmailsFromGoogleAccount(email))
-                            chart.addNode(data);
-                    }, 200 * count);
-                }
-            }
+            // for(const email of aux)
+            // {
+            //     count += 1;
+            //     // console.log(email);
+            //     if(email !== "")
+            //     {
+            //         // setTimeout(() =>
+            //         // {
+            //             let id = getLastId();
+            //             // console.log(id);
+            //             // console.log(isIdinChart(id));
+            //             let data = {
+            //                 "id": id,
+            //                 "name": "",
+            //                 "stpid": "unasigned",
+            //                 "title": email,
+            //                 "img": "",
+            //                 "email": email,
+            //                 "tags": ["unasigned-google-node-card-style"],
+            //                 "button": " "
+            //             };
+            //             // console.log(data);
+            //             if(!getEmailsFromGoogleAccount(email))
+            //                 chart.addNode(data);
+            //         // }, 200 * count);
+            //     }
+            // }
         } catch(err)
         {
             console.log("error from new endpoint", err);
@@ -193,10 +210,10 @@ const Chart = () =>
     };
     const getEmailsFromGoogleAccount = (data) =>
     {
-        console.log(chart);
+        // console.log(chart);
         for(const x in chart.nodes)
         {
-            console.log(chart.get(x));
+            // console.log(chart.get(x));
             if(chart.get(x).title === data)
             {
                 return true;
@@ -272,7 +289,7 @@ const Chart = () =>
                 setTimeout(() =>
                 {
                     let id = getLastId();
-                    console.log(isIdinChart(id));
+                    // console.log(isIdinChart(id));
                     if(!isIdinChart(id))
                     {
                         let data = {
@@ -285,7 +302,7 @@ const Chart = () =>
                             "tags": ["unasigned-node-card-style"],
                             "button": " "
                         }
-                        console.log(data);
+                        // console.log(data);
 
                         // chart.addNode(data);
 
@@ -303,7 +320,7 @@ const Chart = () =>
         // if(name === '' || pos === '' || email === '') return false;
         // console.log(name, pos, email, img);
 
-        console.log(email_list);
+        // console.log(email_list);
         // setLeftSidebar(!leftSidebar);
 
         // let id = getLastId();
