@@ -176,33 +176,33 @@ const Chart = () =>
             let aux = users.split(',');
             // console.log(aux);
             let count = 0;
-            // for(const email of aux)
-            // {
-            //     count += 1;
-            //     // console.log(email);
-            //     if(email !== "")
-            //     {
-            //         // setTimeout(() =>
-            //         // {
-            //             let id = getLastId();
-            //             // console.log(id);
-            //             // console.log(isIdinChart(id));
-            //             let data = {
-            //                 "id": id,
-            //                 "name": "",
-            //                 "stpid": "unasigned",
-            //                 "title": email,
-            //                 "img": "",
-            //                 "email": email,
-            //                 "tags": ["unasigned-google-node-card-style"],
-            //                 "button": " "
-            //             };
-            //             // console.log(data);
-            //             if(!getEmailsFromGoogleAccount(email))
-            //                 chart.addNode(data);
-            //         // }, 200 * count);
-            //     }
-            // }
+            for(const email of aux)
+            {
+                count += 1;
+                // console.log(email);
+                if(email !== "")
+                {
+                    setTimeout(() =>
+                    {
+                        let id = getLastId();
+                        // console.log(id);
+                        // console.log(isIdinChart(id));
+                        let data = {
+                            "id": id,
+                            "name": "",
+                            "stpid": "unasigned",
+                            "title": email,
+                            "img": "",
+                            "email": email,
+                            "tags": ["unasigned-google-node-card-style"],
+                            "button": " "
+                        };
+                        // console.log(data);
+                        if(!getEmailsFromGoogleAccount(email))
+                            chart.addNode(data);
+                    }, 200 * count);
+                }
+            }
         } catch(err)
         {
             console.log("error from new endpoint", err);

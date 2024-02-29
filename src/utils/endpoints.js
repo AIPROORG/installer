@@ -1,5 +1,5 @@
 // const PRODUCTION_BACKEND_URL = "https://backend-for-browser-production.up.railway.app/";
-const BACKEND_URL = "http://127.0.0.1:8000/";
+const BACKEND_URL = "https://backend-for-browser-production.up.railway.app/";
 const endpoints = {
   company: {
     setCompany: `${BACKEND_URL}api/organization/set_organization/`, // POST
