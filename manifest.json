@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Organigram And More",
+  "version": "1.0",
+  "description": "Side Panel Extension",
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_title": "Click to open extension (hover message)"
+  },
+  "permissions": ["sidePanel", "aipro", "settingsPrivate"],
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Q",
+        "mac": "Command+Q"
+      }
+    }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwRLfO3H0GbRg+BvXWXdOPlsJErw+14Vt9Z4OShf22OtIeBJs+NNIEb8kN2W9x0MAIqon55wvIn4MyME3Q+B9AgQiJKS6stBRD0mS/SsDj78eZCsC64jq/YnIdPpeGnlUutn+YDWV59a1b0fUIfX4bHZuBQpK6+UBaF5aSAlu6fBtiFQ7h4hvu+qcdMFG47DFeRH5nD3tI2gCtFerP2U+CKBHoNRDChmWp13dY1qEf9fwB4YBgsos2UZ+P8Wbg4ZPzmuu7qK5Trn8NgVbSWxowpWRf7T57I5uC2wH+2OhlfINGd4L+j0TmhpHMfD19nlxVZcrLxiK4RPAtf/EhsUsgQIDAQAB",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "19": "icons/icon-19.png",
+    "38": "icons/icon-38.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
