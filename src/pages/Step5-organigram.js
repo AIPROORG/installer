@@ -4,6 +4,7 @@ import jsonData from './nodesData.json';
 import { BACKEND_URL } from '../utils/endpoints';
 import axios from "axios";
 import storageComunicator from '../utils/storageComunication';
+import {endpoints }from '../utils/endpoints';
 // import '../index.css';
 
 const Chart = () =>
@@ -19,15 +20,35 @@ const Chart = () =>
     const [inputValues, setInputValues] = useState({
         inputEmails: ''
     });
-    const deps = storageComunicator.company.get_departments();
-    
+    let deps = [];
+    let ceo = {};
+    let employees = [];
+    const fetchOrganigramInfo = async () => {
+        try {
+            const response = await axios.get(endpoints.company.get_organigram_info, {
+                headers: {
+                    "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
+                }
+            }).then((res) => {
+                console.log("laksjhflkajsdhfljkahdflajkhsdlfjhasdlfjh", res.data);
+                deps = res.data.departments;
+                ceo = res.data.ceo;
+                employees = res.data.employees;
+                console.log(employees);
+            });
+            // Process the received data as needed
+        } catch (error) {
+            console.error("Error fetching organigram info:", error);
+        }
+    };
+
    
-    const initializeChart = () =>
+    const initializeChart = async () =>
     {
         // let users = localStorage.getItem("listUsers");
-
+        await fetchOrganigramInfo();
         chart = new OrgChart(divRef.current, {
-            nodes: jsonData,
+            nodes: [{ "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}],
             enableSearch: false,
             enablePan: true,
             scaleInitial: 0.6,
@@ -78,7 +99,8 @@ const Chart = () =>
                 img_1: 'img2',
                 field_1: 'title',
                 field_2: 'email',
-                field_3: 'button'
+                field_3: 'button',
+                field_4: 'dep_id'
             },
             tags: {
                 "unasigned": {
@@ -137,20 +159,63 @@ const Chart = () =>
                 },
             },
         });
+        let data_ceo = {
+            "id": 1,
+            "name": ceo.first_name + " " + ceo.last_name,
+            "stpid": "organigram",
+            "title": "CEO",
+            "img": ceo.picture,
+            "email": ceo.email,
+            "tags": ["big-boss"],
+            "button": " "
+        };
+        chart.addNode(data_ceo);
+        console.log(deps);
         for(const x of deps)
         {
+            if(x.name === "unasigned"){
+                let data_dep = {
+                    "id": x.name,
+                    "name":  x.name,
+                    "title": x.namex,
+                    "img": "",
+                    "email": x.name,
+                    "tags": ["unasigned"],
+                    "button": " ",
+                    "dep_id": x.id
+                };
+                console.log(data_dep);
+                chart.addNode(data_dep);
+            } else {
             let data_dep = {
                 "id": x.name,
-                "name":  x.name,
-                "pid":1,
+                "name": x.name,
+                "pid": 1,
                 "title": x.name,
                 "img": "",
-                "email": x.name,
+                "email":x.name,
                 "tags": ["department","security"],
-                "button": " "
+                "button": " ",
+                "dep_id": x.id
             };
             console.log(data_dep);
             chart.addNode(data_dep);
+        }
+        }
+        for(const x of employees)
+        {
+            let data_emp = {
+                "id": x.id,
+                "name":  x.first_name + " " + x.last_name,
+                "stpid": "unasigned",
+                "title": x.first_name + " " + x.last_name,
+                "img": x.picture,
+                "email": x.email,
+                "tags": ["unasigned-google-node-card-style"],
+                "button": " "
+            };
+            // console.log(data_emp);
+            chart.addNode(data_emp);
         }
     }
 
@@ -350,14 +415,9 @@ const Chart = () =>
     {
         setLeftSidebar(!leftSidebar);
     }
-    useEffect(() =>
-    {
-        initializeChart();
-        // if(!isMounted){
-        //     setIsMounted(true);
-        addGoogleEmails();
-        // }
-
+    const fetchData = async () =>{
+        await initializeChart();
+        
         OrgChart.templates.customGroupUnasigned = Object.assign({}, OrgChart.templates.ana);
         OrgChart.templates.oliviaCustom = Object.assign({}, OrgChart.templates.olivia);
         OrgChart.templates.oliviaCustom.node =
@@ -457,6 +517,7 @@ const Chart = () =>
             console.log(inputName.value)
             console.log(inputPos.value)
         }
+        
         chart.onNodeClick(function (args)
         {
             console.log(args);
@@ -489,6 +550,7 @@ const Chart = () =>
 
             }
         });
+
         chart.on("drop", (sender, draggedNodeId, droppedNodeId) =>
         {
             try
@@ -497,14 +559,33 @@ const Chart = () =>
                 let droppedNode = sender.get(droppedNodeId);
                 let draggedNode = sender.get(draggedNodeId);
                 if(draggedNode === null || droppedNode === null) return false;
-                console.log(sender.getNode(droppedNode.id));
+                // console.log(sender.getNode(droppedNode.id));
+                console.log(draggedNode);
+                console.log(droppedNode);
                 if(droppedNode.tags.indexOf("department") !== -1)
                 {
                     console.log("user drop over department");
-                    draggedNode.tags = ["asigned-node-card-style"];
-                    draggedNode.pid = null;
-                    draggedNode.stpid = droppedNodeId;
-                    sender.updateNode(draggedNode);
+                    try {
+                        axios.post(endpoints.company.set_employee_department, {
+                            "employee_id": draggedNode.id,
+                            "department_id": droppedNode.dep_id
+                        }, {
+                            headers: {
+                                "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
+                            }
+                        }).then((res) => {
+                            console.log("Response from set_employee_department:", res.data);
+                            setNodeInfo();
+                        });
+                        // Process the received data as needed
+                    } catch (error) {
+                        console.error("Error fetching organigram info:", error);
+                    }
+                    // draggedNode.tags = ["asigned-node-card-style"];
+                    // draggedNode.pid = null;
+                    // draggedNode.stpid = droppedNodeId;
+                    // sender.updateNode(draggedNode);
+                    
 
                     return false;
                 } else if(!isNaN(draggedNodeId) && !isNaN(droppedNodeId))
@@ -588,6 +669,18 @@ const Chart = () =>
             // console.log(sender.get(args.node.id).tags());
             return false;
         });
+    
+    }
+
+    useEffect(() =>
+    {
+        fetchData();
+        // await initializeChart();
+        // if(!isMounted){
+        //     setIsMounted(true);
+        // addGoogleEmails();
+        // }
+
     }, [rightSidebar, leftSidebar, selectedNode, initializeChart, chart]);
 
     return (

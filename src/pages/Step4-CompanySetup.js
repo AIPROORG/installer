@@ -25,7 +25,7 @@ const CompanySetup = () => {
             });
             const data = await response.json();
             console.log(data);
-            storageComunicator.company.set_departments(data);
+            // storageComunicator.company.set_departments(data);
             setDepartments(data);
         } catch (error) {
             console.log("Error fetching data:", error);

@@ -21,7 +21,7 @@ const SocialAuth = () => {
 
   const googleLoginHandler = (code) => {
     let url = `${endpoints.login.google}${code}`;
-    return axios.get(url).then((res) => {
+    return axios.post(url).then((res) => {
         // console.log("res from backend", res.data);
         storageComunicator.authToken.set(res.data);
         // localStorage.setItem("authTokens", JSON.stringify(res.data));
