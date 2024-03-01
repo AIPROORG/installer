@@ -1,31 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 import OrgChart from "@balkangraph/orgchart.js";
-import jsonData from './nodesData.json';
-import { BACKEND_URL } from '../utils/endpoints';
 import axios from "axios";
 import storageComunicator from '../utils/storageComunication';
 import {endpoints }from '../utils/endpoints';
-// import '../index.css';
 
 const Chart = () =>
 {
     const divRef = useRef(null);
-    let userList;
     let chart;
-    const [rightSidebar, setRightSidebar] = useState(false);
     const [leftSidebar, setLeftSidebar] = useState(false);
 
-    const [isMounted, setIsMounted] = useState(false);
-    const [selectedNode, setNodeInfo] = useState(null);
-    const [inputValues, setInputValues] = useState({
-        inputEmails: ''
-    });
     let deps = [];
     let ceo = {};
     let employees = [];
+
     const fetchOrganigramInfo = async () => {
+        console.log("fetching organigram info");
         try {
-            const response = await axios.get(endpoints.company.get_organigram_info, {
+            await axios.get(endpoints.company.get_organigram_info, {
                 headers: {
                     "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
                 }
@@ -41,11 +33,190 @@ const Chart = () =>
             console.error("Error fetching organigram info:", error);
         }
     };
+    const getLastId = () =>
+    {
+        let rez = -1;
+        if(chart.nodes === null)
+        {
+            return 0;
+        }
+        else if(chart.nodes)
+        {
+            for(let x in chart.nodes)
+            {
+                // console.log(x);
+                if(!isNaN(x))
+                {
+                    if(parseInt(x) > rez)
+                    {
+                        rez = parseInt(x);
+                    }
+                }
+            }
+        }
+        return rez + 1
+    }
+    const isIdinChart = (id) =>
+    {
+        for(const x in chart.nodes)
+        {
+            if(x.id === id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    const addNewNodeForm = (e) =>
+    {
+        e.preventDefault();
+        let emails = document.getElementById("txtArea");
+        let delimiters = /,|\n|\t|\s|;/;
+        let email_list = emails.value.split(delimiters);
+        let count = 0;
 
-   
+        for(const email of email_list)
+        {
+            count += 1;
+            if(email !== "")
+            {
+                setTimeout(() =>
+                {
+                    let id = getLastId();
+                    // console.log(isIdinChart(id));
+                    if(!isIdinChart(id))
+                    {
+                        let data = {
+                            "id": id,
+                            "name": "",
+                            "stpid": "unasigned",
+                            "title": email,
+                            "img": "",
+                            "email": email,
+                            "tags": ["unasigned-node-card-style"],
+                            "button": " "
+                        }
+                        // console.log(data);
+
+                        // chart.addNode(data);
+
+                        chart.addNode(data);
+                    }
+                }, 200 * count);
+            }
+        }
+        emails.value = '';
+        // let name = inputValues.inputName;
+        // let pos = inputValues.inputPos;
+        // let emails = inputValues.inputEmails;
+        // console.log(e);
+        // let img = inputValues.inputImage;
+        // if(name === '' || pos === '' || email === '') return false;
+        // console.log(name, pos, email, img);
+
+        // console.log(email_list);
+        // setLeftSidebar(!leftSidebar);
+
+        // let id = getLastId();
+        // let data = {
+        //     "id": id,
+        //     "name": name,
+        //     "stpid": "unasigned",
+        //     "title": pos,
+        //     "img": img,
+        //     "email": email,
+        //     "tags": ["unasigned-node-card-style"],
+        //     "button": " "
+        // }
+        // // console.log(getLastId());
+        // chart.addNode(data);
+        // setInputValues({
+        //     inputEmails: ''
+        // });
+        //     inputName: '',
+        //     inputPos: '',
+        //     inputEmail: '',
+        //     inputImage: ''
+        // });
+        // console.log(chart);
+    }
+    const drawChart = async () => {
+        let nodes = [];
+        let data_ceo = {
+            "id": 1,
+            "name": ceo.first_name + " " + ceo.last_name,
+            "stpid": "organigram",
+            "title": "CEO",
+            "img": ceo.picture,
+            "email": ceo.email,
+            "tags": ["big-boss"],
+            "button": " "
+        };
+        nodes.push(data_ceo);
+        for(const x of deps)
+        {
+            if(x.name === "unasigned"){
+                let data_dep = {
+                    "id": x.name,
+                    "name":  x.name,
+                    "title": x.namex,
+                    "img": "",
+                    "email": x.name,
+                    "tags": ["unasigned"],
+                    "button": " ",
+                    "dep_id": x.id
+                };
+                // console.log(data_dep);
+            nodes.push(data_dep);
+            } else {
+            let data_dep = {
+                "id": x.name,
+                "name": x.name,
+                "pid": 1,
+                "title": x.name,
+                "img": "",
+                "email":x.name,
+                "tags": ["department","security"],
+                "button": " ",
+                "dep_id": x.id
+            };
+            // console.log(data_dep);
+            nodes.push(data_dep);
+        }
+        }
+        for(const x of employees)
+        {
+            let data_emp = {
+                "id": x.id,
+                "name":  x.first_name + " " + x.last_name,
+                "stpid": x.department_name,
+                "title": x.first_name + " " + x.last_name,
+                "img": x.picture,
+                "email": x.email,
+                "tags": x.department_name === "unasigned"?["unasigned-google-node-card-style"]:["asigned-node-card-style"],
+                "button": " "
+            };
+            nodes.push(data_emp);
+        }
+        return nodes;
+    }
+    const breakHiererchy = (sender, nodeId) =>
+    {
+        let node = sender.get(nodeId);
+        node.pid = null;
+        node.stpid = "unasigned";
+        node.tags = ["unasigned-google-node-card-style"];
+        sender.updateNode(node);
+
+        for(const child of sender.getNode(nodeId).children)
+        {
+            breakHiererchy(sender, child.id);
+        }
+    }
     const initializeChart = async () =>
     {
         // let users = localStorage.getItem("listUsers");
+        console.log("initialize chart");
         await fetchOrganigramInfo();
         chart = new OrgChart(divRef.current, {
             nodes: [{ "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}],
@@ -159,265 +330,11 @@ const Chart = () =>
                 },
             },
         });
-        let data_ceo = {
-            "id": 1,
-            "name": ceo.first_name + " " + ceo.last_name,
-            "stpid": "organigram",
-            "title": "CEO",
-            "img": ceo.picture,
-            "email": ceo.email,
-            "tags": ["big-boss"],
-            "button": " "
-        };
-        chart.addNode(data_ceo);
-        console.log(deps);
-        for(const x of deps)
-        {
-            if(x.name === "unasigned"){
-                let data_dep = {
-                    "id": x.name,
-                    "name":  x.name,
-                    "title": x.namex,
-                    "img": "",
-                    "email": x.name,
-                    "tags": ["unasigned"],
-                    "button": " ",
-                    "dep_id": x.id
-                };
-                console.log(data_dep);
-                chart.addNode(data_dep);
-            } else {
-            let data_dep = {
-                "id": x.name,
-                "name": x.name,
-                "pid": 1,
-                "title": x.name,
-                "img": "",
-                "email":x.name,
-                "tags": ["department","security"],
-                "button": " ",
-                "dep_id": x.id
-            };
-            console.log(data_dep);
-            chart.addNode(data_dep);
+        let nods = await drawChart();
+        for(const x in nods) {
+            chart.add(nods[x]);
         }
-        }
-        for(const x of employees)
-        {
-            let data_emp = {
-                "id": x.id,
-                "name":  x.first_name + " " + x.last_name,
-                "stpid": "unasigned",
-                "title": x.first_name + " " + x.last_name,
-                "img": x.picture,
-                "email": x.email,
-                "tags": ["unasigned-google-node-card-style"],
-                "button": " "
-            };
-            // console.log(data_emp);
-            chart.addNode(data_emp);
-        }
-    }
 
-    const addGoogleEmails = async () =>
-    {
-        userList = "";
-        try
-        {
-            // console.log(userList);
-            const res = await axios.get(`${BACKEND_URL}api/googleUserList/`, {
-                headers: {
-                    Authorization: `Bearer ${storageComunicator.authToken.get().access}`
-                }
-            });
-            let users = "";
-            // console.log(res.data);
-            for(let x of res.data)
-            {
-                users += x + ",";
-            }
-            // localStorage.setItem("listUsers", users);
-            // console.log("response from new endpoint", res);
-            let aux = users.split(',');
-            // console.log(aux);
-            let count = 0;
-            for(const email of aux)
-            {
-                count += 1;
-                // console.log(email);
-                if(email !== "")
-                {
-                    setTimeout(() =>
-                    {
-                        let id = getLastId();
-                        // console.log(id);
-                        // console.log(isIdinChart(id));
-                        let data = {
-                            "id": id,
-                            "name": "",
-                            "stpid": "unasigned",
-                            "title": email,
-                            "img": "",
-                            "email": email,
-                            "tags": ["unasigned-google-node-card-style"],
-                            "button": " "
-                        };
-                        // console.log(data);
-                        if(!getEmailsFromGoogleAccount(email))
-                            chart.addNode(data);
-                    }, 200 * count);
-                }
-            }
-        } catch(err)
-        {
-            console.log("error from new endpoint", err);
-        }
-    };
-    const getEmailsFromGoogleAccount = (data) =>
-    {
-        // console.log(chart);
-        for(const x in chart.nodes)
-        {
-            // console.log(chart.get(x));
-            if(chart.get(x).title === data)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    const handleChange = (e) =>
-    {
-        const { id, value } = e.target;
-        setInputValues({ ...inputValues, [id]: value });
-    };
-    // function setContent(node) {
-    //     right_sidebar.innerHTML = `
-    //         <div class="flex flex-col items-center">
-    //             <img src="${node.img}" alt="user" class="w-24 h-24 rounded-full mb-2">
-    //             <h1 class="text-lg font-bold">${node.name}</h1>
-    //             <p class="text-sm text-gray-400">${node.title}</p>
-    //         </div>
-    //     `;
-    // }
-
-
-    const getLastId = () =>
-    {
-        let rez = -1;
-        if(chart.nodes === null)
-        {
-            return 0;
-        }
-        else if(chart.nodes)
-        {
-            for(let x in chart.nodes)
-            {
-                // console.log(x);
-                if(!isNaN(x))
-                {
-                    if(parseInt(x) > rez)
-                    {
-                        rez = parseInt(x);
-                    }
-                }
-            }
-        }
-        return rez + 1
-    }
-    const isIdinChart = (id) =>
-    {
-        for(const x in chart.nodes)
-        {
-            if(x.id === id)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    const addNewNodeForm = (e) =>
-    {
-        e.preventDefault();
-        let emails = document.getElementById("txtArea");
-        let delimiters = /,|\n|\t|\s|;/;
-        let email_list = emails.value.split(delimiters);
-        let count = 0;
-
-        for(const email of email_list)
-        {
-            count += 1;
-            if(email !== "")
-            {
-                setTimeout(() =>
-                {
-                    let id = getLastId();
-                    // console.log(isIdinChart(id));
-                    if(!isIdinChart(id))
-                    {
-                        let data = {
-                            "id": id,
-                            "name": "",
-                            "stpid": "unasigned",
-                            "title": email,
-                            "img": "",
-                            "email": email,
-                            "tags": ["unasigned-node-card-style"],
-                            "button": " "
-                        }
-                        // console.log(data);
-
-                        // chart.addNode(data);
-
-                        chart.addNode(data);
-                    }
-                }, 200 * count);
-            }
-        }
-        emails.value = '';
-        // let name = inputValues.inputName;
-        // let pos = inputValues.inputPos;
-        // let emails = inputValues.inputEmails;
-        // console.log(e);
-        // let img = inputValues.inputImage;
-        // if(name === '' || pos === '' || email === '') return false;
-        // console.log(name, pos, email, img);
-
-        // console.log(email_list);
-        // setLeftSidebar(!leftSidebar);
-
-        // let id = getLastId();
-        // let data = {
-        //     "id": id,
-        //     "name": name,
-        //     "stpid": "unasigned",
-        //     "title": pos,
-        //     "img": img,
-        //     "email": email,
-        //     "tags": ["unasigned-node-card-style"],
-        //     "button": " "
-        // }
-        // // console.log(getLastId());
-        // chart.addNode(data);
-        // setInputValues({
-        //     inputEmails: ''
-        // });
-        //     inputName: '',
-        //     inputPos: '',
-        //     inputEmail: '',
-        //     inputImage: ''
-        // });
-        // console.log(chart);
-    }
-    const closeForm = () =>
-    {
-        setLeftSidebar(!leftSidebar);
-    }
-    const fetchData = async () =>{
-        await initializeChart();
-        
         OrgChart.templates.customGroupUnasigned = Object.assign({}, OrgChart.templates.ana);
         OrgChart.templates.oliviaCustom = Object.assign({}, OrgChart.templates.olivia);
         OrgChart.templates.oliviaCustom.node =
@@ -469,23 +386,6 @@ const Chart = () =>
         OrgChart.templates.base.img_1 =
             '<clipPath id="{randId}"><circle cx="600" cy="600" r="400"></circle></clipPath> <image preserveAspectRatio="xMidYMid slice" clip-path="url(#{randId})" xlink:href="{val}" x="500" y="500" width="80" height="80"></image>';
 
-        const breakHiererchy = (sender, nodeId) =>
-        {
-            let node = sender.get(nodeId);
-            node.pid = null;
-            node.stpid = "unasigned";
-            node.tags = ["unasigned-node-card-style"];
-            sender.updateNode(node);
-
-            for(const child of sender.getNode(nodeId).children)
-            {
-                breakHiererchy(sender, child.id);
-            }
-        }
-
-
-
-        console.log(OrgChart)
 
         chart.on("drag", function (sender, draggedNodeId, droppedNodeId)
         {
@@ -504,20 +404,6 @@ const Chart = () =>
             // if(!draggedNode.tags) return false;
             if(draggedNode.tags.includes("big-boss")) return false;
         });
-        const handleCreateNode = () =>
-        {
-            // Logic for creating a node
-            console.log("Creating node...");
-        };
-        const createNode = () =>
-        {
-            console.log("create new node :)")
-            let inputName = document.getElementById("inputName");
-            let inputPos = document.getElementById("inputPos");
-            console.log(inputName.value)
-            console.log(inputPos.value)
-        }
-        
         chart.onNodeClick(function (args)
         {
             console.log(args);
@@ -550,7 +436,6 @@ const Chart = () =>
 
             }
         });
-
         chart.on("drop", (sender, draggedNodeId, droppedNodeId) =>
         {
             try
@@ -562,7 +447,7 @@ const Chart = () =>
                 // console.log(sender.getNode(droppedNode.id));
                 console.log(draggedNode);
                 console.log(droppedNode);
-                if(droppedNode.tags.indexOf("department") !== -1)
+                if(droppedNode.tags.indexOf("department") !== -1 || droppedNode.tags.indexOf("unasigned") !== -1)
                 {
                     console.log("user drop over department");
                     try {
@@ -575,16 +460,31 @@ const Chart = () =>
                             }
                         }).then((res) => {
                             console.log("Response from set_employee_department:", res.data);
-                            setNodeInfo();
+                        //  await drawChart().then((nods) => {
+                        // sender.nodes = [{ "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}];
+                        // for(const x in nods) {
+                        //     chart.add(nods[x]);
+                        // }});
+                            // sender.nodes = [{ "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}]
+                            // sender.draw();
+                            // setNodeInfo();
                         });
+                        
                         // Process the received data as needed
                     } catch (error) {
                         console.error("Error fetching organigram info:", error);
                     }
-                    // draggedNode.tags = ["asigned-node-card-style"];
-                    // draggedNode.pid = null;
-                    // draggedNode.stpid = droppedNodeId;
-                    // sender.updateNode(draggedNode);
+                    if(droppedNode.tags.indexOf("unasigned") !== -1){
+                        breakHiererchy(sender, draggedNodeId);
+                        setTimeout(() =>
+                        {
+                            sender.updateNode(sender.get(draggedNodeId));
+                        }, 500);
+                    }
+                    draggedNode.tags = droppedNode.tags.indexOf("unasigned")===-1?["asigned-node-card-style"]:["unasigned-google-node-card-style"];
+                    draggedNode.pid = null;
+                    draggedNode.stpid = droppedNodeId;
+                    sender.updateNode(draggedNode);
                     
 
                     return false;
@@ -613,11 +513,7 @@ const Chart = () =>
                     console.log(droppedNode)
                     if(droppedNode.tags.indexOf("unasigned") !== -1)
                     {
-                        breakHiererchy(sender, draggedNodeId);
-                        setTimeout(() =>
-                        {
-                            sender.updateNode(sender.get(draggedNodeId));
-                        }, 500);
+                        
                     }
                     return false;
                 }
@@ -669,40 +565,44 @@ const Chart = () =>
             // console.log(sender.get(args.node.id).tags());
             return false;
         });
+        // chart.draw();
     
     }
-
+    const closeForm = () =>
+    {
+        setLeftSidebar(!leftSidebar);
+    }
     useEffect(() =>
     {
-        fetchData();
+        initializeChart();
+        
         // await initializeChart();
         // if(!isMounted){
-        //     setIsMounted(true);
+        // setIsMounted(true);
         // addGoogleEmails();
         // }
-
-    }, [rightSidebar, leftSidebar, selectedNode, initializeChart, chart]);
+    }, [leftSidebar]);
 
     return (
         <div className='h-[100vh] flex steps-background'>
-            <div className={` ${leftSidebar ? 'block' : 'hidden'} p-2 w-[300px] h-full bg-neutral-200`} id="sidebarLeft">
-                <form className="grid" onSubmit={addNewNodeForm} >
-                    <button className="button-close text-left bg-transparent text-black text-right w-5 font-bold py-2 px-4 rounded-full text-center mt-2" onClick={closeForm} value='Send' id='inputSend'>X</button>
-                    <label className="mb-2" htmlFor="inputName">Emails:</label>
-                    <textarea required id="txtArea" />
-                    {/* <input className="rounded-2xl p-1" type='text' placeholder='Emails' required id='inputEmails' value={inputValues.inputEmails} onChange={handleChange} /> */}
-                    {/* <label className="mb-2" htmlFor="inputPos">Position:</label>
-                    <input className="rounded-2xl p-1" type='text' placeholder='Position' required id='inputPos' value={inputValues.inputPos} onChange={handleChange} />
-                    <label className="mb-2" htmlFor="inputEmail">Email:</label>
-                    <input className="rounded-2xl p-1" type='email' placeholder='Email' required id='inputEmail' value={inputValues.inputEmail} onChange={handleChange} />
-                    <label className="mb-2" htmlFor="inputName">Image:</label>
-                    <input className="rounded-2xl p-1" type='text' placeholder='Image' id='inputImage' value={inputValues.inputImage} onChange={handleChange} /> */}
-                    <button className="text-left bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-center mt-2" type='submit' value='Send' id='inputSend'>Add user</button>
-                </form>
-            </div>
-            <div className='h-full w-full bg-neutral-800 grow' id="tree" ref={divRef}></div>
-            <div className={` ${rightSidebar ? 'block' : 'hidden'} p-2 w-[300px] h-full bg-neutral-200`}>right</div>
+        <div className={` ${leftSidebar ? 'block' : 'hidden'} p-2 w-[300px] h-full bg-neutral-200`} id="sidebarLeft">
+            <form className="grid" onSubmit={addNewNodeForm} >
+                <button className="button-close text-left bg-transparent text-black text-right w-5 font-bold py-2 px-4 rounded-full text-center mt-2" onClick={closeForm} value='Send' id='inputSend'>X</button>
+                <label className="mb-2" htmlFor="inputName">Emails:</label>
+                <textarea required id="txtArea" />
+                {/* <input className="rounded-2xl p-1" type='text' placeholder='Emails' required id='inputEmails' value={inputValues.inputEmails} onChange={handleChange} /> */}
+                {/* <label className="mb-2" htmlFor="inputPos">Position:</label>
+                <input className="rounded-2xl p-1" type='text' placeholder='Position' required id='inputPos' value={inputValues.inputPos} onChange={handleChange} />
+                <label className="mb-2" htmlFor="inputEmail">Email:</label>
+                <input className="rounded-2xl p-1" type='email' placeholder='Email' required id='inputEmail' value={inputValues.inputEmail} onChange={handleChange} />
+                <label className="mb-2" htmlFor="inputName">Image:</label>
+                <input className="rounded-2xl p-1" type='text' placeholder='Image' id='inputImage' value={inputValues.inputImage} onChange={handleChange} /> */}
+                <button className="text-left bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-center mt-2" type='submit' value='Send' id='inputSend'>Add user</button>
+            </form>
         </div>
+        <div className='h-full w-full bg-neutral-800 grow' id="tree" ref={divRef}></div>
+        
+    </div>
     );
 }
 
