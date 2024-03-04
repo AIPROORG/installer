@@ -37,7 +37,7 @@ const Step1Login = () => {
             storageComunicator.authToken.set(data)
             // setAuthTokens(data)
             // setUser(jwtDecode(data.access))
-            navigate('/step2')
+            navigate('/step3')
         } else {
             alert(data.detail)
         }

@@ -57,7 +57,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Step0Import/>}/>
                     <Route path="/step1" element={<Step1Login/>}/>
-                    <Route path="/step2" element={<Step2Role/>}/>
+                    {/* <Route path="/step2" element={<Step2Role/>}/> */}
                     <Route path="/step3" element={<Step3Cui/>}/>
                     <Route path="/step4" element={<CompanySetup/>}/>
                     <Route path="/step5" element={<Step5Organigram/>}/>
