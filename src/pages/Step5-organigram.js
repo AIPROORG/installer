@@ -167,7 +167,7 @@ const Chart = () =>
                     "button": " ",
                     "dep_id": x.id
                 };
-                // console.log(data_dep);
+                console.log(data_dep);
             nodes.push(data_dep);
             } else {
             let data_dep = {
@@ -188,7 +188,7 @@ const Chart = () =>
         for(const x of employees)
         {
             let data_emp = {
-                "id": x.id,
+                "id": x.id+1000,
                 "name":  x.first_name + " " + x.last_name,
                 "title": x.first_name + " " + x.last_name,
                 "img": x.picture,
@@ -216,7 +216,7 @@ const Chart = () =>
             breakHiererchy(sender, child.id,dep_id);
         }
         axios.post(endpoints.company.set_employee_department_and_supervizer, {
-            "employee_id": node.id,
+            "employee_id": node.id - 1000,
             "department_id": dep_id,
             "supervizer_id": null
         }, {
@@ -468,7 +468,7 @@ const Chart = () =>
                         console.log(draggedNode.id, droppedNode.dep_id);
                         
                         axios.post(endpoints.company.set_employee_department_and_supervizer, {
-                            "employee_id": draggedNode.id,
+                            "employee_id": draggedNode.id-1000,
                             "department_id": droppedNode.dep_id,
                             "supervizer_id": null
                         }, {
@@ -512,9 +512,9 @@ const Chart = () =>
                     {
                         console.log(droppedNode);
                         axios.post(endpoints.company.set_employee_department_and_supervizer, {
-                            "employee_id": draggedNode.id,
+                            "employee_id": draggedNode.id -1000,
                             "department_id": droppedNode.dep_id,
-                            "supervizer_id": droppedNode.id
+                            "supervizer_id": droppedNode.id - 1000
                         }, {
                             headers: {
                             "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
@@ -594,16 +594,17 @@ const Chart = () =>
     {
         setLeftSidebar(!leftSidebar);
     }
-    useEffect(() =>
-    {
-        initializeChart();
+    // useEffect(() =>
+    // {
+    //     initializeChart();
         
-        // await initializeChart();
-        // if(!isMounted){
-        // setIsMounted(true);
-        // addGoogleEmails();
-        // }
-    }, [leftSidebar,redrawChart]);
+    //     // await initializeChart();
+    //     // if(!isMounted){
+    //     // setIsMounted(true);
+    //     // addGoogleEmails();
+    //     // }
+    // }, [leftSidebar,redrawChart]);
+    initializeChart()
 
     return (
         <div className='h-[100vh] flex steps-background'>
