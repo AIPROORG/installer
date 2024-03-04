@@ -9,6 +9,7 @@ const Chart = () =>
     const divRef = useRef(null);
     let chart;
     const [leftSidebar, setLeftSidebar] = useState(false);
+    const [redrawChart, setRedrawChart] = useState(false);
 
     let deps = [];
     let ceo = {};
@@ -189,29 +190,42 @@ const Chart = () =>
             let data_emp = {
                 "id": x.id,
                 "name":  x.first_name + " " + x.last_name,
-                "stpid": x.department_name,
                 "title": x.first_name + " " + x.last_name,
                 "img": x.picture,
                 "email": x.email,
                 "tags": x.department_name === "unasigned"?["unasigned-google-node-card-style"]:["asigned-node-card-style"],
-                "button": " "
+                "button": " ",
+                "dep_id": x.department_id
             };
+            if(x.department_name !== "unasigned"){
+            data_emp.pid = x.supervizer_id;
+            }
+            if(x.supervizer_id === null)
+            {
+                data_emp.stpid = x.department_name;
+            }
             nodes.push(data_emp);
         }
         return nodes;
     }
-    const breakHiererchy = (sender, nodeId) =>
+    const breakHiererchy = (sender, nodeId, dep_id) =>
     {
         let node = sender.get(nodeId);
-        node.pid = null;
-        node.stpid = "unasigned";
-        node.tags = ["unasigned-google-node-card-style"];
-        sender.updateNode(node);
-
         for(const child of sender.getNode(nodeId).children)
         {
-            breakHiererchy(sender, child.id);
+            breakHiererchy(sender, child.id,dep_id);
         }
+        axios.post(endpoints.company.set_employee_department_and_supervizer, {
+            "employee_id": node.id,
+            "department_id": dep_id,
+            "supervizer_id": null
+        }, {
+            headers: {
+                "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
+            }
+        }).then((res) => {
+
+    });
     }
     const initializeChart = async () =>
     {
@@ -451,15 +465,19 @@ const Chart = () =>
                 {
                     console.log("user drop over department");
                     try {
-                        axios.post(endpoints.company.set_employee_department, {
+                        console.log(draggedNode.id, droppedNode.dep_id);
+                        
+                        axios.post(endpoints.company.set_employee_department_and_supervizer, {
                             "employee_id": draggedNode.id,
-                            "department_id": droppedNode.dep_id
+                            "department_id": droppedNode.dep_id,
+                            "supervizer_id": null
                         }, {
                             headers: {
                                 "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
                             }
                         }).then((res) => {
                             console.log("Response from set_employee_department:", res.data);
+                            setRedrawChart(!redrawChart);
                         //  await drawChart().then((nods) => {
                         // sender.nodes = [{ "id": "organigram","tags": [ "organigram" ], "name": "Organigram", "movex": 0, "movey": 0 ,"button":" "}];
                         // for(const x in nods) {
@@ -475,35 +493,39 @@ const Chart = () =>
                         console.error("Error fetching organigram info:", error);
                     }
                     if(droppedNode.tags.indexOf("unasigned") !== -1){
-                        breakHiererchy(sender, draggedNodeId);
-                        setTimeout(() =>
-                        {
-                            sender.updateNode(sender.get(draggedNodeId));
-                        }, 500);
+                        breakHiererchy(sender, draggedNodeId, droppedNode.dep_id);
                     }
-                    draggedNode.tags = droppedNode.tags.indexOf("unasigned")===-1?["asigned-node-card-style"]:["unasigned-google-node-card-style"];
-                    draggedNode.pid = null;
-                    draggedNode.stpid = droppedNodeId;
-                    sender.updateNode(draggedNode);
+                    // draggedNode.tags = droppedNode.tags.indexOf("unasigned")===-1?["asigned-node-card-style"]:["unasigned-google-node-card-style"];
+                    // draggedNode.pid = null;
+                    // draggedNode.stpid = droppedNodeId;
+                    // sender.updateNode(draggedNode);
                     
 
                     return false;
                 } else if(!isNaN(draggedNodeId) && !isNaN(droppedNodeId))
                 {
+                    console.log(chart.getNode(draggedNodeId));
                     if(droppedNode.stpid === "unasigned")
                     {
-                        breakHiererchy(sender, draggedNodeId);
-                        setTimeout(() =>
-                        {
-                            sender.updateNode(sender.get(draggedNodeId));
-                        }, 500);
+                        breakHiererchy(sender, draggedNodeId, droppedNode.dep_id);
                     } else
                     {
-                        console.log("user dropped on another user")
-                        draggedNode.pid = droppedNodeId;
-                        draggedNode.stpid = null;
-                        draggedNode.tags = ["asigned-node-card-style"];
-                        sender.updateNode(draggedNode);
+                        console.log(droppedNode);
+                        axios.post(endpoints.company.set_employee_department_and_supervizer, {
+                            "employee_id": draggedNode.id,
+                            "department_id": droppedNode.dep_id,
+                            "supervizer_id": droppedNode.id
+                        }, {
+                            headers: {
+                            "Authorization": `Bearer ${storageComunicator.authToken.get().access}`
+                            }
+                        }).then((res) => {
+                            setRedrawChart(!redrawChart);
+                        });
+                        // draggedNode.pid = droppedNodeId;
+                        // draggedNode.stpid = droppedNodeId.stpid;
+                        // draggedNode.tags = ["asigned-node-card-style"];
+                        // sender.updateNode(draggedNode);
                     }
                     return false;
                 }
@@ -581,7 +603,7 @@ const Chart = () =>
         // setIsMounted(true);
         // addGoogleEmails();
         // }
-    }, [leftSidebar]);
+    }, [leftSidebar,redrawChart]);
 
     return (
         <div className='h-[100vh] flex steps-background'>
