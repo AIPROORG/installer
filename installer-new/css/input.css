@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    @apply bg-no-repeat object-fill bg-cover bg-[url('/images/background.png')];
+}

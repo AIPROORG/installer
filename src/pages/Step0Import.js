@@ -1,5 +1,5 @@
 /* global chrome */
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Step5Organigram = () => {
 
@@ -12,28 +12,28 @@ const Step5Organigram = () => {
     }, []);
 
 
-    function importFromBrowser(button, browserIndex){
+    function importFromBrowser(button, browserIndex) {
         let browser = browserList[browserIndex];
-            chrome.aipro.runImport(browserIndex, function(canceled) {
-                console.log(canceled)
-                if(canceled) {
-                    console.log("import canceled")
-                    return;
-                }
-                console.log("imported from browser" + browser.name)
-                button.classList.add('bg-green-200');
-            })
+        chrome.aipro.runImport(browserIndex, function (canceled) {
+            console.log(canceled)
+            if (canceled) {
+                console.log("import canceled")
+                return;
+            }
+            console.log("imported from browser" + browser.name)
+            button.classList.add('bg-green-200');
+        })
     }
 
     const renderButtons = () => {
         return browserList.map((browser, i) => (
-            <button 
+            <button
                 className='border rounded-xl bg-[rgba(255,255,255,0.7)] min-h-[150px] max-h-[150px] max-w-[150px] min-w-[150px] '
-                key={i} 
+                key={i}
                 id={`importButton${i}`}
-                onClick={() => 
+                onClick={() =>
                     importFromBrowser(document.getElementById(`importButton${i}`), i)
-                }> 
+                }>
                 {browser.name} <br /> {browser.profile}
             </button>
         ));
