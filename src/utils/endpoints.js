@@ -10,6 +10,7 @@ const endpoints = {
     set_company_departments: `${BACKEND_URL}api/organization/set_company_departments/`, // POST
     get_organigram_info: `${BACKEND_URL}api/organization/get_organigram_info/`,
     set_employee_department_and_supervizer: `${BACKEND_URL}api/organization/set_employee_department_and_supervizer/`,
+    get_user_employees_from_google: `${BACKEND_URL}api/organization/get_user_employees_from_google/`,
   },
   login: {
     basic: {
