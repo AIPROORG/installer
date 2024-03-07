@@ -13,9 +13,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
         enabled: true,
     });
 });
-chrome.aipro.getBrowserList(function(browser_list) {
-  console.log(browser_list);
-  // chrome.aipro.runImport(browser_list[0].index, function() {
-    // console.log('import completed');
-  // })
-})
+// chrome.aipro.getBrowserList(function(browser_list) {
+//   console.log(browser_list);
+//   // chrome.aipro.runImport(browser_list[0].index, function() {
+//     // console.log('import completed');
+//   // })
+// })
