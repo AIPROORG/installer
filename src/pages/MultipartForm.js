@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { endpoints } from '../utils/endpoints';
+import storageComunicator from '../utils/storageComunication';
 
 const MultipartForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -17,7 +18,8 @@ const MultipartForm = () => {
     try {
       const response = await axios.post(endpoints.home_page.add_bg_image, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'Authorization':'Bearer ' + String(storageComunicator.authToken.get().access)
         }
       });
       console.log('Upload successful:', response.data);

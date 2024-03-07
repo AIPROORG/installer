@@ -7,13 +7,15 @@ import storageComunicator from '../utils/storageComunication';
 import { useNavigate } from 'react-router-dom'
 
 const Import = () => {
-    const data = require('./data.json');
-    let hs = data;
+    // const data = require('./data.json');
+    // let hs = data;
+    let hs = [];
     let filteredHistory = [];
     const urlExists = (url) => {
         return filteredHistory.some(item => item.url === url);
     }
     const filterHistory = () => {
+        getAllBrowserHistory();
         // regexThis();
         // console.log(hs);
         for( const x of hs){
@@ -28,17 +30,17 @@ const Import = () => {
         console.log(filteredHistory);
     }
     const getAllBrowserHistory = () => {
-        // chrome.history.search(
-        //     {
-        //       text: '', // Return every history item....
-        //       startTime: 0 // that was accessed less than one week ago.
-        //     },
-        //     (historyItems) => {
-        //       hs = historyItems;
-        //       console.log(hs);
-        //     }
-        // );
-        // console.log(hs);
+        chrome.history.search(
+            {
+              text: '', // Return every history item....
+              startTime: 0 // that was accessed less than one week ago.
+            },
+            (historyItems) => {
+              hs = historyItems;
+              console.log(hs);
+            }
+        );
+        console.log(filteredHistory);
     }
     const regexThis = () => {
         const re = new RegExp("[a-zA-Z0-9\-:]*//[a-zA-Z0-9\-.:]*/");
@@ -70,7 +72,7 @@ const Import = () => {
     }
     return (
         <div className='steps-background flex flex-col items-center justify-center space-y-4 space-x-4'>
-          <button onClick={getAllBrowserHistory}>Import</button>
+          {/* <button onClick={getAllBrowserHistory}>Import</button> */}
           <button onClick={filterHistory}>Import</button>
           {/* <button onClick={regexThis}>Import</button> */}
         </div>
