@@ -2,35 +2,135 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { endpoints } from '../utils/endpoints';
 import storageComunicator from '../utils/storageComunication';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const MultipartForm = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert('Please select an image');
-      return;
-    }
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-    try {
-      const response = await axios.post(endpoints.home_page.add_bg_image, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization':'Bearer ' + String(storageComunicator.authToken.get().access)
-        }
-      });
-      console.log('Upload successful:', response.data);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
+
   return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload Image</button>
+    <div classNameName="steps-background flex flex-col items-center justify-center space-y-4 space-x-4">
+      <section class="vh-100 gradient-custom-2">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-12 col-xl-10">
+
+              <div class="card mask-custom">
+                <div class="card-body p-4 text-white">
+
+                  <div class="text-center pt-3 pb-2">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                      alt="Check" width="60" />
+                    <h2 class="my-4">Task List</h2>
+                  </div>
+
+                  <table class="table text-white mb-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">Team Member</th>
+                        <th scope="col">Task</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="fw-normal">
+                        <th>
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                            alt="avatar 1" class="w-10 h-10" />
+                          <span class="ms-2">Alice Mayer</span>
+                        </th>
+                        <td class="align-middle">
+                          <span>Call Sam For payments</span>
+                        </td>
+                        <td class="align-middle">
+                          <h6 class="mb-0"><span class="badge bg-danger">High priority</span></h6>
+                        </td>
+                        <td class="align-middle">
+                          <a href="#!" data-mdb-toggle="tooltip" title="Done"><i
+                              class="fas fa-check fa-lg text-success me-3"></i></a>
+                          <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i
+                              class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                        </td>
+                      </tr>
+                      <tr class="fw-normal">
+                        <th>
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+                            alt="avatar 1" class="w-10 h-10" />
+                          <span class="ms-2">Kate Moss</span>
+                        </th>
+                        <td class="align-middle">Make payment to Bluedart</td>
+                        <td class="align-middle">
+                          <h6 class="mb-0"><span class="badge bg-success">Low priority</span></h6>
+                        </td>
+                        <td class="align-middle">
+                          <a href="#!" data-mdb-toggle="tooltip" title="Done"><i
+                              class="fas fa-check fa-lg text-success me-3"></i></a>
+                          <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i
+                              class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                        </td>
+                      </tr>
+                      <tr class="fw-normal">
+                        <th>
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                            alt="avatar 1" class="w-10 h-10" />
+                          <span class="ms-2">Danny McChain</span>
+                        </th>
+                        <td class="align-middle">Office rent</td>
+                        <td class="align-middle">
+                          <h6 class="mb-0"><span class="badge bg-warning">Middle priority</span></h6>
+                        </td>
+                        <td class="align-middle">
+                          <a href="#!" data-mdb-toggle="tooltip" title="Done"><i
+                              class="fas fa-check fa-lg text-success me-3"></i></a>
+                          <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i
+                              class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                        </td>
+                      </tr>
+                      <tr class="fw-normal">
+                        <th>
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
+                            alt="avatar 1" class="w-10 h-10" />
+                          <span class="ms-2">Alexa Chung</span>
+                        </th>
+                        <td class="align-middle">Office grocery shopping</td>
+                        <td class="align-middle">
+                          <h6 class="mb-0"><span class="badge bg-danger">High priority</span></h6>
+                        </td>
+                        <td class="align-middle">
+                          <a href="#!" data-mdb-toggle="tooltip" title="Done"><i
+                              class="fas fa-check fa-lg text-success me-3"></i></a>
+                          <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i
+                              class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                        </td>
+                      </tr>
+                      <tr class="fw-normal">
+                        <th class="border-0">
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                            alt="avatar 1" class="w-10 h-10" />
+                          <span class="ms-2">Ben Smith</span>
+                        </th>
+                        <td class="border-0 align-middle">Ask for Lunch to Clients</td>
+                        <td class="border-0 align-middle">
+                          <h6 class="mb-0"><span class="badge bg-success">Low priority</span></h6>
+                        </td>
+                        <td class="border-0 align-middle">
+                          <a href="#!" data-mdb-toggle="tooltip" title="Done"><i
+                              class="fas fa-check fa-lg text-success me-3"></i></a>
+                          <a href="#!" data-mdb-toggle="tooltip" title="Remove"><i
+                              class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

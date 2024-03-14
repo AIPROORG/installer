@@ -11,6 +11,7 @@ const GoogleLoginButton = () => {
 
   const openGoogleLoginPage = useCallback(() =>
   {
+    console.log("openGoogleLoginPage");
       const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
       const scope = [
@@ -31,8 +32,8 @@ const GoogleLoginButton = () => {
       });
 
       const url = `${googleAuthUrl}?${params}`;
-
-      window.location.href = url;
+      console.log(url);
+      window.open(url, '_blank');
   }, []);
 
 

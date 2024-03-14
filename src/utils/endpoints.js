@@ -1,6 +1,6 @@
-const BACKEND_URL = "http://127.0.0.1:8000/";
+// const BACKEND_URL = "http://127.0.0.1:8000/";
 // const BACKEND_URL = "http://192.168.2.70:8000/";
-// const BACKEND_URL = "https://backend-for-browser-production.up.railway.app/";
+const BACKEND_URL = "https://backend-for-browser-production.up.railway.app/";
 
 const endpoints = {
   home_page: {
@@ -15,6 +15,7 @@ const endpoints = {
     get_organigram_info: `${BACKEND_URL}api/organization/get_organigram_info/`,
     set_employee_department_and_supervizer: `${BACKEND_URL}api/organization/set_employee_department_and_supervizer/`,
     get_user_employees_from_google: `${BACKEND_URL}api/organization/get_user_employees_from_google/`,
+    save_most_used_sites: `${BACKEND_URL}api/homePage/save_most_used_sites/`,
   },
   login: {
     basic: {

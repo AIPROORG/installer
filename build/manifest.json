@@ -9,11 +9,12 @@
   "action": {
     "default_title": "Click to open extension (hover message)"
   },
-  "permissions": ["sidePanel","settingsPrivate", "history"],
-  "side_panel": {
-    "default_path": "index.html"
+  "permissions": ["aipro", "settingsPrivate", "history", "tabs"],
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "index.html"
   },
-  "commands": {
+  "commands": {  
     "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+C",
